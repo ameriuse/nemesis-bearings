@@ -106,10 +106,7 @@ html {
 
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(77, 131, 255, 0.12), transparent 28%),
-    radial-gradient(circle at top right, rgba(243, 179, 92, 0.18), transparent 32%),
-    linear-gradient(180deg, #eef3f8 0%, #f8fafc 38%, #edf2f7 100%);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
   line-height: 1.6;
@@ -122,11 +119,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(26, 36, 51, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 36, 51, 0.03) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.45), transparent 88%);
+  opacity: 0;
 }
 
 ::selection {
@@ -195,10 +188,9 @@ a {
 }
 
 .glass {
-  background: rgba(8, 17, 31, 0.72);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
 }
 
 .glass-light {
@@ -303,39 +295,72 @@ a {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  border-radius: var(--radius-full);
-  padding: 0.95rem 1.5rem;
+  padding: 0.875rem 2rem;
   font-family: var(--font-heading);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease,
-    color 220ms ease, border-color 220ms ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-amber {
+  position: relative;
   color: var(--navy-950);
-  background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
-  box-shadow: var(--shadow-glow);
+  background: linear-gradient(135deg, var(--amber-500), var(--amber-600));
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.btn-amber::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
 }
 
 .btn-amber:hover {
   transform: translateY(-2px);
-  box-shadow: 0 28px 50px rgba(243, 179, 92, 0.28);
+  background: linear-gradient(135deg, var(--amber-400), var(--amber-500));
+  box-shadow: var(--shadow-glow), 0 8px 30px rgba(245,158,11,0.3);
+}
+
+.btn-amber:hover::before {
+  transform: translateX(100%);
 }
 
 .btn-outline {
-  color: var(--foreground);
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(141, 157, 179, 0.28);
+  position: relative;
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  z-index: 0;
+}
+
+.btn-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--amber-500);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
 }
 
 .btn-outline:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(45, 109, 250, 0.3);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--amber-500);
+  color: var(--navy-950);
+}
+
+.btn-outline:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .btn-dark {
@@ -517,6 +542,35 @@ a {
   }
 }
 
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes reveal-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes particle-float {
   0%,
   100% {
@@ -579,16 +633,16 @@ a {
 }
 
 .product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
 }
 
 .product-card .product-img {
-  transition: transform 300ms ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-card:hover .product-img {
-  transform: scale(1.04);
+  transform: scale(1.08);
 }
 
 .part-number {

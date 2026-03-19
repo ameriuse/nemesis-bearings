@@ -3,36 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 
-const process = [
-  {
-    step: '01',
-    title: 'Source Qualification',
-    description: 'Approved manufacturers, verified paperwork, and clear commercial communication before stock hits the shelf.',
-  },
-  {
-    step: '02',
-    title: 'Incoming Inspection',
-    description: 'Dimensional checks, labeling review, packaging verification, and visible condition inspection at receipt.',
-  },
-  {
-    step: '03',
-    title: 'Traceability Control',
-    description: 'Batch and lot information recorded so support teams can answer questions after the order ships.',
-  },
-  {
-    step: '04',
-    title: 'Customer Documentation',
-    description: 'Certificates of conformance and related support paperwork can be prepared when the order requires it.',
-  },
-];
-
-const qualityHighlights = [
-  'Incoming inspection on all inventory',
-  'Batch tracking for order support and traceability',
-  'Documentation available on request',
-  'Technical review support before purchase',
-];
-
 export default function QualitySection() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -40,98 +10,90 @@ export default function QualitySection() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('visible');
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
-
-    const animated = sectionRef.current?.querySelectorAll('.fade-up, .fade-left, .fade-right');
-    animated?.forEach((node) => observer.observe(node));
-
+    const els = sectionRef.current?.querySelectorAll('.fade-up, .fade-left, .fade-right');
+    els?.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-navy-950 py-28 text-white">
-      <div className="absolute inset-0 grid-pattern opacity-50" />
+    <section ref={sectionRef} className="relative bg-navy-900 text-white diagonal-top py-28 overflow-hidden">
+      <div className="absolute inset-0 grid-pattern" />
       <div className="absolute inset-0 noise-overlay" />
-      <div className="absolute left-[10%] top-[-6rem] h-[26rem] w-[26rem] rounded-full bg-blue-500/12 blur-[120px]" />
-      <div className="absolute right-[8%] bottom-[-8rem] h-[30rem] w-[30rem] rounded-full bg-amber-500/14 blur-[140px]" />
-      <div className="deco-text absolute right-[-2%] top-[8%] opacity-30">QA</div>
 
-      <div className="relative mx-auto max-w-[1400px] px-4">
-        <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+      <div className="deco-text absolute top-[8%] right-[-3%] opacity-20">QA</div>
+
+      <div
+        className="absolute top-[-100px] left-[20%] w-[500px] h-[500px] rounded-full blur-[150px]"
+        style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)' }}
+      />
+
+      <div className="relative max-w-[1400px] mx-auto px-4">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
           <div className="fade-left">
-            <span className="section-kicker section-kicker-light">Quality System</span>
-            <h2 className="mt-4 text-4xl font-bold md:text-5xl" style={{ fontFamily: 'var(--font-heading)' }}>
-              Quality language that feels grounded, specific, and credible.
+            <div className="accent-line mb-4" />
+            <span className="text-amber-500 text-xs font-bold uppercase tracking-[3px]">Quality Assurance</span>
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wide mt-3 mb-8" style={{ fontFamily: 'var(--font-heading)' }}>
+              Quality You Can Verify
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-steel-300 md:text-lg">
-              The new section frames quality around inspection, traceability, and response readiness instead of vague
-              claims. That is a better fit for industrial buyers and support conversations.
+            <p className="text-steel-400 mb-8 leading-relaxed text-lg">
+              Our quality process includes incoming inspection, dimensional verification, and batch tracking.
+              We maintain documentation and provide certificates of conformance upon request.
             </p>
-
-            <div className="mt-8 grid gap-3">
-              {qualityHighlights.map((item) => (
-                <div key={item} className="rounded-[1.4rem] border border-white/8 bg-white/5 px-5 py-4 text-sm text-steel-200">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500/12 text-amber-400">
-                      <svg className="h-[14px] w-[14px]" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </span>
-                    <span>{item}</span>
-                  </div>
-                </div>
+            <ul className="space-y-4 text-steel-400 mb-10">
+              {[
+                'Incoming inspection on all products',
+                'Batch and lot traceability',
+                'Certificates of conformance available',
+                'Verified sourcing from established manufacturers',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 group">
+                  <span className="w-6 h-6 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-amber-500/20 transition-colors">
+                    <svg className="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <span className="group-hover:text-steel-300 transition-colors">{item}</span>
+                </li>
               ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/quality" className="btn-amber">
-                View Quality Page
-              </Link>
-              <Link href="/resources/downloads" className="btn-outline !text-white !bg-white/6 !border-white/12">
-                Documentation
-              </Link>
-            </div>
+            </ul>
+            <Link href="/quality" className="btn-amber inline-block">
+              VIEW QUALITY PROCESS
+            </Link>
           </div>
 
-          <div className="fade-right surface-dark rounded-[2rem] p-6 md:p-8">
-            <div className="flex items-center justify-between gap-4 border-b border-white/8 pb-5">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-400">
-                  Workflow overview
-                </p>
-                <p className="mt-2 text-lg font-semibold text-white">Inspection and traceability flow</p>
-              </div>
-              <div className="rounded-full border border-white/8 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-steel-400">
-                Operations-ready
-              </div>
-            </div>
+          <div className="fade-right">
+            <div className="bg-navy-800/80 rounded-2xl p-8 border border-navy-700/50 backdrop-blur-sm relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
-            <div className="mt-6 space-y-5">
-              {process.map((item) => (
-                <div key={item.step} className="grid gap-4 rounded-[1.5rem] border border-white/8 bg-white/5 p-5 md:grid-cols-[84px_1fr]">
-                  <div className="flex items-center">
-                    <span className="text-4xl font-bold text-amber-400" style={{ fontFamily: 'var(--font-heading)' }}>
-                      {item.step}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-7 text-steel-400">{item.description}</p>
-                  </div>
-                </div>
-              ))}
+              <h3 className="font-black text-lg mb-8 uppercase tracking-wider flex items-center gap-3" style={{ fontFamily: 'var(--font-heading)' }}>
+                <span className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </span>
+                Our Process
+              </h3>
+              <ol className="space-y-7">
+                {[
+                  { step: '01', title: 'Supplier Qualification', desc: 'Established manufacturers with documented quality systems' },
+                  { step: '02', title: 'Incoming Inspection', desc: 'Dimensional checks, visual inspection, packaging verification' },
+                  { step: '03', title: 'Documentation Review', desc: 'Mill certificates, test reports, and compliance documents' },
+                  { step: '04', title: 'Batch Recording', desc: 'Full lot tracking from receipt through shipment' },
+                ].map((item) => (
+                  <li key={item.step} className="flex gap-5 group">
+                    <span className="text-amber-500 font-black text-3xl leading-none group-hover:text-amber-400 transition-colors" style={{ fontFamily: 'var(--font-heading)' }}>{item.step}</span>
+                    <div className="border-l-2 border-navy-600 pl-5 group-hover:border-amber-500/30 transition-colors">
+                      <p className="font-bold text-sm uppercase tracking-wider mb-1">{item.title}</p>
+                      <p className="text-steel-500 text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </div>

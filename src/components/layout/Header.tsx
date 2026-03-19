@@ -1,308 +1,210 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import SearchBar from './SearchBar';
 
 const navItems = [
   {
-    label: 'Products',
+    label: 'PRODUCTS',
     href: '/shop',
     children: [
       { label: 'Ball Bearings', href: '/shop/ball-bearings', desc: 'Deep groove, angular contact, self-aligning' },
-      { label: 'Roller Bearings', href: '/shop/roller-bearings', desc: 'Cylindrical, tapered, and needle styles' },
-      { label: 'Spherical Bearings', href: '/shop/spherical-bearings', desc: 'Roller and plain spherical options' },
-      { label: 'Thrust Bearings', href: '/shop/thrust-bearings', desc: 'Axial load support for pumps and gearboxes' },
-      { label: 'Mounted Units', href: '/shop/mounted-units', desc: 'Pillow block, flange, and take-up units' },
-      { label: 'Housings', href: '/shop/housings', desc: 'Split and solid bearing housings' },
-      { label: 'Seals & Accessories', href: '/shop/seals-and-accessories', desc: 'Lock nuts, sleeves, and lubrication accessories' },
+      { label: 'Roller Bearings', href: '/shop/roller-bearings', desc: 'Cylindrical, tapered, needle' },
+      { label: 'Spherical Bearings', href: '/shop/spherical-bearings', desc: 'Spherical roller & plain' },
+      { label: 'Thrust Bearings', href: '/shop/thrust-bearings', desc: 'Ball & roller thrust types' },
+      { label: 'Mounted Units', href: '/shop/mounted-units', desc: 'Pillow block, flanged, take-up' },
+      { label: 'Housings', href: '/shop/housings', desc: 'Split & solid housings' },
+      { label: 'Seals & Accessories', href: '/shop/seals-and-accessories', desc: 'Seals, lock nuts, adapters' },
     ],
   },
   {
-    label: 'Resources',
+    label: 'RESOURCES',
     href: '/resources',
     children: [
-      { label: 'Selector Guide', href: '/resources/selector-guide', desc: 'Match the right bearing to the application' },
-      { label: 'Cross Reference', href: '/resources/interchange', desc: 'Interchange help for major brands' },
-      { label: 'Lubrication Guide', href: '/resources/lubrication-guide', desc: 'Grease and oil guidance' },
-      { label: 'Fit & Tolerance', href: '/resources/fit-tolerance', desc: 'Shaft and housing recommendations' },
-      { label: 'Damage Analysis', href: '/resources/damage-analysis', desc: 'Troubleshooting wear and failure patterns' },
-      { label: 'Downloads', href: '/resources/downloads', desc: 'Datasheets, certificates, and catalogs' },
+      { label: 'Selector Guide', href: '/resources/selector-guide', desc: 'Find the right bearing type' },
+      { label: 'Cross Reference', href: '/resources/interchange', desc: 'Interchange part numbers' },
+      { label: 'Lubrication Guide', href: '/resources/lubrication-guide', desc: 'Grease & oil selection' },
+      { label: 'Fit & Tolerance', href: '/resources/fit-tolerance', desc: 'Shaft & housing fits' },
+      { label: 'Damage Analysis', href: '/resources/damage-analysis', desc: 'Failure mode identification' },
+      { label: 'Downloads', href: '/resources/downloads', desc: 'Datasheets, CAD, catalogs' },
     ],
   },
-  { label: 'Quality', href: '/quality' },
-  { label: 'Support', href: '/support' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'QUALITY', href: '/quality' },
+  { label: 'SUPPORT', href: '/support' },
+  { label: 'ABOUT', href: '/about' },
+  { label: 'CONTACT', href: '/contact' },
 ];
 
-function isActivePath(pathname: string, href: string) {
-  if (href === '/') {
-    return pathname === href;
-  }
-
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export default function Header() {
-  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
     return () => {
       document.body.style.overflow = '';
     };
   }, [mobileMenuOpen]);
 
-  const lightChrome = pathname !== '/' || scrolled;
-
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        lightChrome ? 'glass-light shadow-lg shadow-steel-950/6' : 'glass'
+      className={`sticky top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? 'glass shadow-xl shadow-black/10'
+          : 'bg-navy-900'
       }`}
     >
-      <div className="mx-auto max-w-[1400px] px-4">
-        <div className="flex h-[82px] items-center justify-between gap-5">
-          <Link href="/" className="group flex items-center gap-3 min-w-0">
-            <div
-              className={`relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border transition-all ${
-                lightChrome
-                  ? 'border-steel-200 bg-white text-navy-900'
-                  : 'border-white/10 bg-white/6 text-white'
-              }`}
-            >
-              <div
-                className="absolute inset-0 opacity-70"
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(77,131,255,0.18), transparent 45%, rgba(243,179,92,0.2) 100%)',
-                }}
-              />
-              <svg className="relative h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="8.5" strokeWidth="1.8" />
-                <circle cx="12" cy="12" r="2.9" fill="currentColor" strokeWidth="0" />
-                <circle cx="12" cy="3.8" r="1.3" fill="currentColor" strokeWidth="0" />
-                <circle cx="12" cy="20.2" r="1.3" fill="currentColor" strokeWidth="0" />
-                <circle cx="3.8" cy="12" r="1.3" fill="currentColor" strokeWidth="0" />
-                <circle cx="20.2" cy="12" r="1.3" fill="currentColor" strokeWidth="0" />
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="flex items-center justify-between h-[76px]">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:shadow-amber-500/30 group-hover:scale-105">
+              <svg className="w-5 h-5 text-navy-900" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" />
+                <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+                <circle cx="12" cy="4" r="1.5" fill="currentColor" />
+                <circle cx="12" cy="20" r="1.5" fill="currentColor" />
+                <circle cx="4" cy="12" r="1.5" fill="currentColor" />
+                <circle cx="20" cy="12" r="1.5" fill="currentColor" />
               </svg>
             </div>
-            <div className="min-w-0">
-              <span
-                className={`block text-lg font-bold tracking-[0.28em] ${
-                  lightChrome ? 'text-navy-950' : 'text-white'
-                }`}
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
+            <div className="flex flex-col">
+              <span className="text-white text-xl tracking-[4px] font-bold leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                 NEMESIS
               </span>
-              <span className="block text-[10px] uppercase tracking-[0.26em] text-steel-500">
-                Bearings supply and support
-              </span>
+              <span className="text-steel-600 text-[9px] tracking-[3px] uppercase font-medium">Bearings</span>
             </div>
           </Link>
 
-          <div className="hidden lg:block flex-1 max-w-xl">
-            <SearchBar tone={lightChrome ? 'light' : 'dark'} />
+          <div className="hidden lg:block flex-1 max-w-xl mx-8">
+            <SearchBar />
           </div>
 
-          <nav className="hidden xl:flex items-center gap-1" aria-label="Main navigation">
-            {navItems.map((item) => {
-              const active = isActivePath(pathname, item.href);
-              const tone = lightChrome
-                ? active
-                  ? 'text-navy-950'
-                  : 'text-steel-600 hover:text-navy-900'
-                : active
-                  ? 'text-white'
-                  : 'text-steel-400 hover:text-white';
-
-              return (
-                <div
-                  key={item.label}
-                  className="relative"
-                  onMouseEnter={() => item.children && setOpenDropdown(item.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
+            {navItems.map((item) => (
+              <div
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <Link
+                  href={item.href}
+                  className="relative text-steel-400 hover:text-white px-3.5 py-2 text-xs font-semibold tracking-[1.5px] transition-all duration-300 inline-flex items-center gap-1 group"
                 >
-                  <Link
-                    href={item.href}
-                    className={`group inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] ${tone}`}
-                  >
-                    <span>{item.label}</span>
-                    {item.children && (
-                      <svg
-                        className={`h-3 w-3 transition-transform ${
-                          openDropdown === item.label ? 'rotate-180' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    )}
-                    <span
-                      className={`absolute inset-x-3 bottom-1 h-[2px] rounded-full transition-all ${
-                        active ? 'bg-amber-500' : 'scale-x-0 bg-blue-500 group-hover:scale-x-100'
-                      }`}
-                    />
-                  </Link>
-
-                  {item.children && openDropdown === item.label && (
-                    <div className="absolute left-0 top-full pt-4">
-                      <div className="surface-panel w-[340px] p-3">
-                        <div className="mb-2 px-2">
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600">
-                            Explore {item.label}
-                          </p>
-                        </div>
-                        <div className="space-y-1">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className="block rounded-2xl px-4 py-3 hover:bg-steel-50"
-                            >
-                              <span className="block text-sm font-semibold text-steel-900">
-                                {child.label}
-                              </span>
-                              <span className="block text-xs text-steel-500">{child.desc}</span>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                  {item.label}
+                  {item.children && (
+                    <svg className={`w-3 h-3 opacity-50 transition-transform duration-300 ${openDropdown === item.label ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   )}
-                </div>
-              );
-            })}
+                  <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                </Link>
+
+                {item.children && openDropdown === item.label && (
+                  <div className="absolute top-full left-0 pt-3 z-50" style={{ animation: 'countUp 0.2s ease forwards' }}>
+                    <div className="bg-navy-800/95 backdrop-blur-xl border border-navy-600/50 rounded-xl shadow-2xl shadow-black/30 py-3 min-w-[300px] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
+
+                      <div className="px-4 pb-3 mb-2 border-b border-navy-600/50">
+                        <Link href={item.href} className="text-amber-500 text-xs font-bold tracking-wider uppercase hover:text-amber-400 transition-colors inline-flex items-center gap-1.5 group/all">
+                          View All {item.label}
+                          <svg className="w-3 h-3 group-hover/all:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </Link>
+                      </div>
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className="block px-4 py-3 hover:bg-navy-700/50 transition-all duration-200 group/item"
+                        >
+                          <span className="text-sm text-white font-medium group-hover/item:text-amber-400 transition-colors flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-amber-500/40 group-hover/item:bg-amber-500 transition-colors" />
+                            {child.label}
+                          </span>
+                          {'desc' in child && (
+                            <span className="block text-xs text-steel-500 mt-0.5 ml-3">
+                              {(child as { desc: string }).desc}
+                            </span>
+                          )}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link href="/quote" className="hidden sm:inline-flex btn-amber !px-5 !py-3">
-              Get Quote
+            <Link href="/quote" className="hidden sm:inline-flex btn-amber text-xs tracking-wider !py-2.5 !px-5">
+              GET QUOTE
             </Link>
-            <Link
-              href="/cart"
-              className={`relative inline-flex h-11 w-11 items-center justify-center rounded-full border ${
-                lightChrome
-                  ? 'border-steel-200 bg-white text-steel-700 hover:text-navy-950'
-                  : 'border-white/10 bg-white/6 text-steel-300 hover:text-white'
-              }`}
-              aria-label="Shopping cart"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 2.3c-.63.63-.18 1.7.71 1.7H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
-                />
-              </svg>
-              <span className="absolute right-[2px] top-[2px] flex h-[18px] w-[18px] items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-navy-950">
-                0
-              </span>
+            <Link href="/cart" className="relative text-steel-400 hover:text-amber-400 transition-all duration-300 p-2.5 group" aria-label="Shopping cart">
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
+              <span className="absolute -top-[2px] -right-[2px] bg-amber-500 text-navy-900 text-[10px] w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold shadow-sm">0</span>
             </Link>
+
             <button
-              className={`xl:hidden inline-flex h-11 w-11 items-center justify-center rounded-full border ${
-                lightChrome
-                  ? 'border-steel-200 bg-white text-navy-950'
-                  : 'border-white/10 bg-white/6 text-white'
-              }`}
-              onClick={() => setMobileMenuOpen((current) => !current)}
+              className="xl:hidden text-white p-2 hover:text-amber-500 transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
             >
-              <div className="relative h-4 w-5">
-                <span
-                  className={`absolute left-0 top-0 h-[2px] w-full rounded-full bg-current transition-all ${
-                    mobileMenuOpen ? 'translate-y-[7px] rotate-45' : ''
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 top-[7px] h-[2px] w-full rounded-full bg-current transition-opacity ${
-                    mobileMenuOpen ? 'opacity-0' : ''
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 top-[14px] h-[2px] w-full rounded-full bg-current transition-all ${
-                    mobileMenuOpen ? '-translate-y-[7px] -rotate-45' : ''
-                  }`}
-                />
+              <div className="w-6 h-6 relative flex items-center justify-center">
+                <span className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${mobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`} />
+                <span className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+                <span className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${mobileMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`} />
               </div>
             </button>
           </div>
         </div>
       </div>
 
-      <div
-        className={`xl:hidden fixed inset-x-0 top-[118px] bottom-0 z-40 transition-all duration-300 ${
-          mobileMenuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-      >
-        <div className="absolute inset-0 bg-navy-950/80 backdrop-blur-md" />
-        <div className="relative h-full overflow-y-auto px-4 pb-8 pt-5">
-          <div className="surface-dark mx-auto max-w-3xl p-5">
-            <SearchBar tone="dark" />
-            <div className="mt-5 rounded-3xl border border-white/8 bg-white/5 p-2">
-              {navItems.map((item) => (
-                <div key={item.label} className="border-b border-white/6 last:border-b-0">
-                  <Link
-                    href={item.href}
-                    className={`flex items-center justify-between rounded-2xl px-4 py-4 text-sm font-semibold uppercase tracking-[0.18em] ${
-                      isActivePath(pathname, item.href) ? 'text-amber-400' : 'text-white'
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                    {!item.children && (
-                      <svg className="h-4 w-4 text-steel-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    )}
-                  </Link>
-                  {item.children && (
-                    <div className="px-4 pb-4">
-                      <div className="grid gap-2 rounded-2xl bg-navy-900/70 p-3">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className="rounded-2xl border border-white/6 bg-white/4 px-4 py-3"
-                          >
-                            <span className="block text-sm font-semibold text-white">{child.label}</span>
-                            <span className="block text-xs text-steel-400">{child.desc}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <a
-                href="tel:+19154010626"
-                className="rounded-full border border-white/10 bg-white/6 px-5 py-3 text-center text-sm font-semibold text-white"
-              >
-                Call Sales
-              </a>
-              <Link href="/quote" className="btn-amber">
-                Submit RFQ
-              </Link>
-            </div>
+      <div className={`xl:hidden fixed inset-0 top-[76px] z-50 transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-navy-900/95 backdrop-blur-xl" />
+
+        <div className="relative h-full overflow-y-auto">
+          <div className="px-4 py-4">
+            <SearchBar />
           </div>
+          <nav className="px-2 pb-8" aria-label="Mobile navigation">
+            {navItems.map((item) => (
+              <div key={item.label}>
+                <Link
+                  href={item.href}
+                  className="block text-white hover:text-amber-400 px-4 py-4 text-base font-bold tracking-[2px] border-b border-navy-700/50 transition-colors"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+                {item.children && (
+                  <div className="pl-4 bg-navy-800/30">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className="block text-steel-400 hover:text-amber-400 px-4 py-3 text-sm transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
         </div>
       </div>
     </header>

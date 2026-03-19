@@ -1,123 +1,93 @@
 import Link from 'next/link';
 import { Product } from '@/types/product';
-import { AvailabilityBadge, CategoryBadge } from '@/components/ui/Badge';
+import { AvailabilityBadge } from '@/components/ui/Badge';
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="product-card surface-card card-premium group overflow-hidden">
-      <Link
-        href={`/shop/${product.category}/${product.slug}`}
-        className="relative block overflow-hidden border-b border-border bg-navy-950 p-6"
-      >
-        <div
-          className="absolute inset-0 opacity-80"
-          style={{
-            background:
-              'radial-gradient(circle at top left, rgba(243,179,92,0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(77,131,255,0.22), transparent 42%)',
-          }}
-        />
-        <div className="relative flex aspect-square items-center justify-center">
-          <div className="product-img text-white/75">
-            <svg className="h-32 w-32" viewBox="0 0 100 100" fill="currentColor">
-              <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="3" />
-              <circle cx="50" cy="50" r="14" fill="currentColor" opacity="0.28" />
-              <circle
-                cx="50"
-                cy="50"
-                r="25"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeDasharray="5 4"
-              />
-              {[0, 60, 120, 180, 240, 300].map((angle) => {
-                const radians = (angle * Math.PI) / 180;
-                return (
-                  <circle
-                    key={angle}
-                    cx={50 + 25 * Math.cos(radians)}
-                    cy={50 + 25 * Math.sin(radians)}
-                    r="4.5"
-                    fill="currentColor"
-                    opacity="0.5"
-                  />
-                );
+    <article className="product-card bg-surface border border-border rounded-xl overflow-hidden group">
+      <Link href={`/shop/${product.category}/${product.slug}`} className="block bg-steel-50 p-8 relative overflow-hidden">
+        <div className="w-full aspect-square flex items-center justify-center">
+          <div className="product-img text-steel-300">
+            <svg className="w-28 h-28 opacity-25" viewBox="0 0 100 100" fill="currentColor">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="4" />
+              <circle cx="50" cy="50" r="16" fill="currentColor" opacity="0.3" />
+              <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="5 3" />
+              {[0, 60, 120, 180, 240, 300].map((a) => {
+                const r = (a * Math.PI) / 180;
+                return <circle key={a} cx={50 + 28 * Math.cos(r)} cy={50 + 28 * Math.sin(r)} r="5" fill="currentColor" opacity="0.4" />;
               })}
             </svg>
           </div>
         </div>
+        {product.images[0]?.isRepresentative && (
+          <span className="absolute bottom-2 right-3 text-[10px] text-steel-400 italic">Representative</span>
+        )}
 
-        <div className="relative mt-4 flex items-center justify-between gap-3">
-          <CategoryBadge label={product.category.replaceAll('-', ' ')} />
-          {product.images[0]?.isRepresentative && (
-            <span className="text-[10px] uppercase tracking-[0.18em] text-white/60">
-              Representative
-            </span>
-          )}
+        <div className="absolute inset-0 bg-navy-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+          <span className="bg-white text-navy-900 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider">
+            View Details
+          </span>
         </div>
       </Link>
 
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="part-number text-steel-500">#{product.partNumber}</p>
-            <Link href={`/shop/${product.category}/${product.slug}`}>
-              <h3
-                className="mt-2 text-lg font-semibold text-steel-900 group-hover:text-blue-600"
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
-                {product.name}
-              </h3>
-            </Link>
-          </div>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <Link href={`/shop/${product.category}/${product.slug}`} className="group-hover:text-amber-600 transition-colors">
+            <h3 className="font-bold text-sm leading-tight" style={{ fontFamily: 'var(--font-heading)', letterSpacing: '0.3px' }}>
+              {product.name}
+            </h3>
+          </Link>
+        </div>
+
+        <p className="part-number text-muted mb-1">#{product.partNumber}</p>
+
+        <div className="flex gap-3 text-[11px] text-steel-500 mb-2 font-mono">
+          <span>{product.boreID}×{product.outerDiameter}×{product.width}mm</span>
+          <span>{product.dynamicLoadRating}kN</span>
+        </div>
+
+        <div className="mb-3">
           <AvailabilityBadge status={product.availability} />
         </div>
 
-        <p className="mt-3 line-clamp-2 text-sm leading-6 text-steel-600">
-          {product.shortDescription}
-        </p>
-
-        <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-steel-500">
-          <span className="rounded-full bg-steel-100 px-3 py-1.5">{product.boreID} mm bore</span>
-          <span className="rounded-full bg-steel-100 px-3 py-1.5">{product.outerDiameter} mm od</span>
-          <span className="rounded-full bg-steel-100 px-3 py-1.5">{product.dynamicLoadRating} kN</span>
-        </div>
-
         {product.comparableBrands.length > 0 && (
-          <p className="mt-4 text-xs leading-5 text-steel-500">
+          <p className="text-[10px] text-steel-500 mb-3 leading-relaxed">
             Xref: {product.comparableBrands.slice(0, 2).join(', ')}
-            {product.comparableBrands.length > 2 && ` +${product.comparableBrands.length - 2} more`}
+            {product.comparableBrands.length > 2 && ` +${product.comparableBrands.length - 2}`}
           </p>
         )}
 
-        <div className="mt-5 flex items-end justify-between gap-4 border-t border-border pt-4">
-          <div>
+        <div className="border-t border-border pt-3">
+          <div className="flex items-center justify-between mb-3">
             {product.quoteOnly ? (
-              <p className="text-sm font-semibold text-steel-800">Quote required</p>
+              <span className="text-sm font-bold text-steel-700">Quote Required</span>
             ) : (
-              <p className="text-2xl font-bold text-navy-950" style={{ fontFamily: 'var(--font-heading)' }}>
+              <span className="text-xl font-black text-navy-900" style={{ fontFamily: 'var(--font-heading)' }}>
                 ${product.unitPrice?.toFixed(2)}
-              </p>
+              </span>
             )}
-            <p className="text-xs uppercase tracking-[0.16em] text-steel-500">{product.leadTime}</p>
+            <span className="text-[10px] text-steel-400 uppercase tracking-wider">{product.leadTime}</span>
           </div>
 
           <div className="flex gap-2">
             {product.quoteOnly ? (
-              <Link href={`/quote?part=${product.partNumber}`} className="btn-amber !px-4 !py-3 text-[11px]">
-                Get Quote
+              <Link
+                href={`/quote?part=${product.partNumber}`}
+                className="flex-1 text-center btn-amber text-xs py-2"
+              >
+                GET QUOTE
               </Link>
             ) : (
-              <button className="btn-dark !px-4 !py-3 text-[11px]">Add To Cart</button>
+              <button className="flex-1 btn-amber text-xs py-2">
+                ADD TO CART
+              </button>
             )}
             <Link
-              href={`/shop/${product.category}/${product.slug}`}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-steel-600 hover:border-blue-500/20 hover:text-blue-600"
-              title="View product details"
+              href={`/quote?part=${product.partNumber}`}
+              className="px-3 py-2 border border-border rounded-md text-steel-600 hover:border-amber-500 hover:text-amber-600 transition-colors"
+              title="Request quote"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             </Link>
           </div>
         </div>
