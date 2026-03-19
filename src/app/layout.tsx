@@ -1,51 +1,68 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import UtilityBar from "@/components/layout/UtilityBar";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import type { Metadata } from 'next';
+import { JetBrains_Mono, Manrope, Space_Grotesk } from 'next/font/google';
+import './globals.css';
+import UtilityBar from '@/components/layout/UtilityBar';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+const bodyFont = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+});
+
+const headingFont = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
+const monoFont = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://nemesis-bearings.vercel.app'),
   title: {
-    default: "Nemesis Bearings | Industrial Bearing Solutions",
-    template: "%s | Nemesis Bearings",
+    default: 'Nemesis Bearings | Industrial Bearing Supply',
+    template: '%s | Nemesis Bearings',
   },
   description:
-    "Industrial bearing solutions with cross-reference support for major brands. Ball bearings, roller bearings, mounted units, and accessories. Quality inspection, fast shipping, expert technical support.",
+    'Industrial bearing supply with cross-reference support, technical guidance, traceable inventory, and fast order response for maintenance, engineering, and procurement teams.',
   keywords: [
-    "bearings",
-    "ball bearings",
-    "roller bearings",
-    "industrial bearings",
-    "bearing supplier",
-    "bearing cross reference",
-    "bearing interchange",
-    "SKF equivalent",
-    "NSK equivalent",
-    "FAG equivalent",
+    'industrial bearings',
+    'bearing supplier',
+    'ball bearings',
+    'roller bearings',
+    'bearing interchange',
+    'bearing cross reference',
+    'mounted units',
+    'bearing technical support',
   ],
   openGraph: {
-    type: "website",
-    siteName: "Nemesis Bearings",
-    title: "Nemesis Bearings | Industrial Bearing Solutions",
+    type: 'website',
+    siteName: 'Nemesis Bearings',
+    url: 'https://nemesis-bearings.vercel.app',
+    title: 'Nemesis Bearings | Industrial Bearing Supply',
     description:
-      "Cross-reference and interchange support for widely used bearing series. Quality-assured alternatives with full technical data.",
+      'Browse industrial bearings, request quotes fast, and get practical support for interchange, fit, lubrication, and application selection.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nemesis Bearings | Industrial Bearing Supply',
+    description:
+      'Industrial bearing supply with cross-reference support, traceable inventory, and expert technical guidance.',
   },
 };
 
 const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Nemesis Bearings",
-  url: "https://nemesisbearings.com",
-  telephone: "+1-915-401-0626",
-  email: "sales@nemesisbearings.com",
-  description: "Industrial bearing solutions with cross-reference support for major brands.",
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Nemesis Bearings',
+  url: 'https://nemesis-bearings.vercel.app',
+  telephone: '+1-915-401-0626',
+  email: 'sales@nemesisbearings.com',
+  description:
+    'Industrial bearing supplier focused on cross-reference support, technical guidance, and fast order response.',
 };
 
 export default function RootLayout({
@@ -54,29 +71,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
+    <html
+      lang="en"
+      className={`${bodyFont.variable} ${headingFont.variable} ${monoFont.variable} h-full antialiased`}
+    >
+      <body className="min-h-full">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-      </head>
-      <body className="min-h-full flex flex-col">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <UtilityBar />
-        <Header />
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <div className="min-h-screen flex flex-col">
+          <UtilityBar />
+          <Header />
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

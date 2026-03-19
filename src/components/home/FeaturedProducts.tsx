@@ -1,9 +1,9 @@
 'use client';
 
-import { sampleProducts } from '@/data/products';
-import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import ProductCard from '@/components/product/ProductCard';
+import { sampleProducts } from '@/data/products';
 
 export default function FeaturedProducts() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -12,48 +12,58 @@ export default function FeaturedProducts() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 }
     );
-    const els = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
-    els?.forEach((el) => observer.observe(el));
+
+    const animated = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
+    animated?.forEach((node) => observer.observe(node));
+
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-steel-100 py-24 overflow-hidden">
-      {/* Dot pattern */}
+    <section ref={sectionRef} className="relative overflow-hidden bg-steel-100/70 py-24">
       <div className="absolute inset-0 dot-pattern opacity-40" />
-
-      <div className="relative max-w-[1400px] mx-auto px-4">
-        <div className="flex items-end justify-between mb-12 fade-up">
+      <div className="relative mx-auto max-w-[1400px] px-4">
+        <div className="fade-up grid gap-8 lg:grid-cols-[1fr_0.56fr] lg:items-end">
           <div>
-            <div className="accent-line mb-4" />
-            <span className="text-amber-600 text-xs font-bold uppercase tracking-[3px]">Popular Items</span>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wide mt-3" style={{ fontFamily: 'var(--font-heading)' }}>
-              Featured Bearings
-            </h2>
+            <span className="section-kicker">Featured Inventory</span>
+            <h2 className="section-title mt-4 text-steel-950">Products presented with stronger hierarchy and cleaner buying cues.</h2>
+            <p className="section-copy mt-5 max-w-3xl">
+              Product cards now feel more commercial and trustworthy: clearer specs, better cross-reference context,
+              stronger pricing emphasis, and more deliberate action buttons.
+            </p>
           </div>
-          <Link href="/shop" className="hidden md:flex items-center gap-2 text-navy-900 font-bold text-sm uppercase tracking-wider hover:text-amber-600 transition-colors group">
-            View All
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </Link>
+          <div className="surface-panel rounded-[1.8rem] p-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600">
+              Why this matters
+            </p>
+            <p className="mt-3 text-sm leading-7 text-steel-600">
+              Buyers can scan dimensions, load rating, availability, and commercial status at a glance without
+              losing the premium visual feel of the site.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/shop" className="btn-dark">
+                View All Products
+              </Link>
+              <Link href="/quote" className="btn-outline">
+                Send RFQ
+              </Link>
+            </div>
+          </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4 stagger-children">
           {sampleProducts.map((product) => (
             <div key={product.id} className="fade-up">
               <ProductCard product={product} />
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-10 md:hidden">
-          <Link href="/shop" className="text-amber-600 font-bold text-sm uppercase tracking-wider hover:underline">
-            View All Products &rarr;
-          </Link>
         </div>
       </div>
     </section>

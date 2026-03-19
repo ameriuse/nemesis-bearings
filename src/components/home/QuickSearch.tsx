@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 
 type SearchMode = 'part-number' | 'dimensions' | 'application';
 
+const quickLookups = [
+  { label: '6205-2RS', mode: 'part-number' as const, value: '6205-2RS' },
+  { label: '22210 E', mode: 'part-number' as const, value: '22210 E' },
+  { label: '25 / 52 / 15', mode: 'dimensions' as const, value: '25,52,15' },
+  { label: 'Conveyor', mode: 'application' as const, value: 'conveyor' },
+];
+
 export default function QuickSearch() {
   const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
@@ -19,128 +26,238 @@ export default function QuickSearch() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 }
     );
-    const els = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
-    els?.forEach((el) => observer.observe(el));
+
+    const animated = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
+    animated?.forEach((node) => observer.observe(node));
+
     return () => observer.disconnect();
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (mode === 'part-number' && partNumber.trim()) {
       router.push(`/shop?q=${encodeURIComponent(partNumber.trim())}`);
-    } else if (mode === 'dimensions') {
+      return;
+    }
+
+    if (mode === 'dimensions') {
       const params = new URLSearchParams();
-      if (bore) params.set('bore', bore);
-      if (od) params.set('od', od);
-      if (width) params.set('w', width);
-      router.push(`/shop?${params.toString()}`);
-    } else if (mode === 'application' && application.trim()) {
+      if (bore.trim()) params.set('bore', bore.trim());
+      if (od.trim()) params.set('od', od.trim());
+      if (width.trim()) params.set('w', width.trim());
+
+      if (params.size > 0) {
+        router.push(`/shop?${params.toString()}`);
+      }
+
+      return;
+    }
+
+    if (mode === 'application' && application.trim()) {
       router.push(`/shop?app=${encodeURIComponent(application.trim())}`);
     }
   };
 
+  const handleLookupClick = (lookup: (typeof quickLookups)[number]) => {
+    setMode(lookup.mode);
+
+    if (lookup.mode === 'part-number') {
+      router.push(`/shop?q=${encodeURIComponent(lookup.value)}`);
+      return;
+    }
+
+    if (lookup.mode === 'dimensions') {
+      const [nextBore, nextOd, nextWidth] = lookup.value.split(',');
+      router.push(`/shop?bore=${encodeURIComponent(nextBore)}&od=${encodeURIComponent(nextOd)}&w=${encodeURIComponent(nextWidth)}`);
+      return;
+    }
+
+    router.push(`/shop?app=${encodeURIComponent(lookup.value)}`);
+  };
+
   return (
-    <section ref={sectionRef} className="scale-up bg-surface border border-border rounded-2xl p-8 md:p-10 shadow-xl -mt-8 relative z-10 max-w-5xl mx-auto overflow-hidden">
-      {/* Decorative gradient */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
+    <section ref={sectionRef} className="relative z-10 -mt-12 pb-8">
+      <div className="surface-panel scale-up relative mx-auto max-w-6xl overflow-hidden p-6 md:p-8 lg:p-10">
+        <div
+          className="absolute inset-0 opacity-80"
+          style={{
+            background:
+              'radial-gradient(circle at top left, rgba(77,131,255,0.08), transparent 30%), radial-gradient(circle at bottom right, rgba(243,179,92,0.12), transparent 32%)',
+          }}
+        />
+        <div className="relative grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div className="fade-up">
+            <span className="section-kicker">Search Smarter</span>
+            <h2 className="mt-4 text-3xl font-bold text-steel-950 md:text-4xl" style={{ fontFamily: 'var(--font-heading)' }}>
+              Find the right bearing even when you only have part of the story.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-steel-600">
+              Search by exact part number, dimensions, or application language. If the part is obsolete or
+              cross-referenced, we can still move the request forward.
+            </p>
 
-      <h2 className="text-xl font-black uppercase tracking-wider mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
-        Find Your Bearing
-      </h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {[
+                'Part number and interchange lookup',
+                'Dimension-led search for unknown bearings',
+                'Application support for pumps, motors, conveyors',
+                'Fast handoff to RFQ when catalog search is not enough',
+              ].map((item) => (
+                <div key={item} className="rounded-[1.3rem] border border-steel-200 bg-white/75 px-4 py-4 text-sm text-steel-700">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
 
-      {/* Mode Tabs */}
-      <div className="flex gap-0.5 bg-steel-100 rounded-lg p-1 mb-7 w-fit">
-        {([
-          { key: 'part-number', label: 'Part Number' },
-          { key: 'dimensions', label: 'By Dimensions' },
-          { key: 'application', label: 'By Application' },
-        ] as const).map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setMode(key)}
-            className={`px-5 py-2.5 rounded-md text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
-              mode === key
-                ? 'bg-navy-900 text-amber-500 shadow-md'
-                : 'text-steel-600 hover:text-steel-900'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+          <div className="fade-up rounded-[1.8rem] border border-steel-200 bg-white/78 p-5 shadow-sm md:p-6">
+            <div className="flex flex-wrap gap-2 rounded-full bg-steel-100 p-1">
+              {([
+                { key: 'part-number', label: 'Part Number' },
+                { key: 'dimensions', label: 'Dimensions' },
+                { key: 'application', label: 'Application' },
+              ] as const).map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setMode(key)}
+                  className={`rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors ${
+                    mode === key
+                      ? 'bg-navy-900 text-white'
+                      : 'text-steel-600 hover:text-steel-900'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-6">
+              {mode === 'part-number' && (
+                <div className="grid gap-4">
+                  <div>
+                    <label htmlFor="qs-part" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                      Part number or cross-reference
+                    </label>
+                    <input
+                      id="qs-part"
+                      type="text"
+                      value={partNumber}
+                      onChange={(e) => setPartNumber(e.target.value)}
+                      placeholder="6205-2RS, SKF 22210 E, UCP205"
+                      className="mt-2 w-full rounded-[1.1rem] border border-steel-200 bg-white px-4 py-4 text-sm text-steel-900 shadow-sm focus:border-blue-400"
+                    />
+                  </div>
+                  <button type="submit" className="btn-dark w-full sm:w-auto">
+                    Search Catalog
+                  </button>
+                </div>
+              )}
+
+              {mode === 'dimensions' && (
+                <div className="grid gap-4 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end">
+                  <div>
+                    <label htmlFor="qs-bore" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                      Bore ID
+                    </label>
+                    <input
+                      id="qs-bore"
+                      type="number"
+                      value={bore}
+                      onChange={(e) => setBore(e.target.value)}
+                      placeholder="25"
+                      className="mt-2 w-full rounded-[1.1rem] border border-steel-200 bg-white px-4 py-4 text-sm text-steel-900 shadow-sm focus:border-blue-400"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="qs-od" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                      Outer diameter
+                    </label>
+                    <input
+                      id="qs-od"
+                      type="number"
+                      value={od}
+                      onChange={(e) => setOd(e.target.value)}
+                      placeholder="52"
+                      className="mt-2 w-full rounded-[1.1rem] border border-steel-200 bg-white px-4 py-4 text-sm text-steel-900 shadow-sm focus:border-blue-400"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="qs-width" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                      Width
+                    </label>
+                    <input
+                      id="qs-width"
+                      type="number"
+                      value={width}
+                      onChange={(e) => setWidth(e.target.value)}
+                      placeholder="15"
+                      className="mt-2 w-full rounded-[1.1rem] border border-steel-200 bg-white px-4 py-4 text-sm text-steel-900 shadow-sm focus:border-blue-400"
+                    />
+                  </div>
+                  <button type="submit" className="btn-dark">
+                    Search
+                  </button>
+                </div>
+              )}
+
+              {mode === 'application' && (
+                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                  <div>
+                    <label htmlFor="qs-app" className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                      Application or equipment
+                    </label>
+                    <input
+                      id="qs-app"
+                      type="text"
+                      value={application}
+                      onChange={(e) => setApplication(e.target.value)}
+                      placeholder="electric motor, conveyor, pump, fan"
+                      className="mt-2 w-full rounded-[1.1rem] border border-steel-200 bg-white px-4 py-4 text-sm text-steel-900 shadow-sm focus:border-blue-400"
+                    />
+                  </div>
+                  <button type="submit" className="btn-dark">
+                    Search
+                  </button>
+                </div>
+              )}
+            </form>
+
+            <div className="mt-6 border-t border-steel-200 pt-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-500">
+                Common lookups
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {quickLookups.map((lookup) => (
+                  <button
+                    key={`${lookup.mode}-${lookup.label}`}
+                    type="button"
+                    onClick={() => handleLookupClick(lookup)}
+                    className="rounded-full border border-steel-200 bg-steel-50 px-4 py-2 text-xs font-semibold text-steel-700 hover:border-blue-400 hover:text-blue-600"
+                  >
+                    {lookup.label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-4 text-sm text-steel-600">
+                Need help with an unavailable part or incomplete dimensions?{' '}
+                <a href="/quote" className="font-semibold text-blue-600 hover:text-blue-500">
+                  Send an RFQ
+                </a>{' '}
+                and we will help you identify the right replacement.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <form onSubmit={handleSubmit}>
-        {mode === 'part-number' && (
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <label htmlFor="qs-part" className="block text-xs font-bold text-steel-700 mb-2 uppercase tracking-wider">
-                Part Number or Cross-Reference
-              </label>
-              <input
-                id="qs-part"
-                type="text"
-                value={partNumber}
-                onChange={(e) => setPartNumber(e.target.value)}
-                placeholder="e.g., 6205-2RS, SKF 22210 E, 25×52×15"
-                className="w-full border border-steel-300 rounded-lg px-5 py-3.5 text-sm font-mono focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all hover:border-steel-400"
-              />
-            </div>
-            <button type="submit" className="self-end btn-amber whitespace-nowrap">
-              SEARCH
-            </button>
-          </div>
-        )}
-
-        {mode === 'dimensions' && (
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="flex-1 min-w-[100px]">
-              <label htmlFor="qs-bore" className="block text-xs font-bold text-steel-700 mb-2 uppercase tracking-wider">Bore ID (mm)</label>
-              <input id="qs-bore" type="number" value={bore} onChange={(e) => setBore(e.target.value)} placeholder="25" className="w-full border border-steel-300 rounded-lg px-5 py-3.5 text-sm font-mono focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 hover:border-steel-400 transition-all" />
-            </div>
-            <div className="flex-1 min-w-[100px]">
-              <label htmlFor="qs-od" className="block text-xs font-bold text-steel-700 mb-2 uppercase tracking-wider">OD (mm)</label>
-              <input id="qs-od" type="number" value={od} onChange={(e) => setOd(e.target.value)} placeholder="52" className="w-full border border-steel-300 rounded-lg px-5 py-3.5 text-sm font-mono focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 hover:border-steel-400 transition-all" />
-            </div>
-            <div className="flex-1 min-w-[100px]">
-              <label htmlFor="qs-width" className="block text-xs font-bold text-steel-700 mb-2 uppercase tracking-wider">Width (mm)</label>
-              <input id="qs-width" type="number" value={width} onChange={(e) => setWidth(e.target.value)} placeholder="15" className="w-full border border-steel-300 rounded-lg px-5 py-3.5 text-sm font-mono focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 hover:border-steel-400 transition-all" />
-            </div>
-            <button type="submit" className="btn-amber whitespace-nowrap">
-              SEARCH
-            </button>
-          </div>
-        )}
-
-        {mode === 'application' && (
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <label htmlFor="qs-app" className="block text-xs font-bold text-steel-700 mb-2 uppercase tracking-wider">Application or Industry</label>
-              <input
-                id="qs-app"
-                type="text"
-                value={application}
-                onChange={(e) => setApplication(e.target.value)}
-                placeholder="e.g., electric motor, conveyor, pump, mining"
-                className="w-full border border-steel-300 rounded-lg px-5 py-3.5 text-sm focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 hover:border-steel-400 transition-all"
-              />
-            </div>
-            <button type="submit" className="self-end btn-amber whitespace-nowrap">
-              SEARCH
-            </button>
-          </div>
-        )}
-      </form>
-
-      <p className="text-xs text-steel-500 mt-5">
-        Can&apos;t find what you need?{' '}
-        <a href="/quote" className="text-amber-600 font-bold hover:underline">Submit an RFQ</a>{' '}
-        and our team will identify the right bearing for your application.
-      </p>
     </section>
   );
 }

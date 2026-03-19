@@ -1,44 +1,35 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 
 const features = [
   {
-    icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-    title: 'Quality Inspection',
-    description: 'Every shipment undergoes incoming inspection. Dimensional verification, visual inspection, and documentation review.',
-    number: '01',
+    title: 'Commercial Clarity',
+    description: 'Lead time, MOQ, quote handling, and alternate options are easier to understand throughout the catalog.',
+    icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.6a1 1 0 01.7.3l5.4 5.4a1 1 0 01.3.7V19a2 2 0 01-2 2z',
   },
   {
-    icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
-    title: 'Cross-Reference',
-    description: 'Interchange assistance for major industry bearing series. We help identify the right replacement.',
-    number: '02',
+    title: 'Technical Confidence',
+    description: 'Cross-reference, load, dimensions, fit, and application guidance are surfaced in a more structured way.',
+    icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
   },
   {
+    title: 'Faster Decisions',
+    description: 'The updated layout is more scannable on both desktop and mobile, which reduces friction for urgent sourcing.',
     icon: 'M13 10V3L4 14h7v7l9-11h-7z',
-    title: 'Fast Availability',
-    description: 'Same-day shipping on in-stock items. Expedited orders available. Transparent lead times.',
-    number: '03',
   },
   {
-    icon: 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-    title: 'Technical Support',
-    description: 'Application engineering from experienced bearing specialists. Selection, fit, lubrication, troubleshooting.',
-    number: '04',
+    title: 'Stronger Brand Signal',
+    description: 'Typography, spacing, and surfaces now look intentional, which makes the business feel more established online.',
+    icon: 'M12 2l7 4v6c0 5-3.4 9.8-7 10-3.6-.2-7-5-7-10V6l7-4z',
   },
-  {
-    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
-    title: 'Batch Traceability',
-    description: 'Full batch tracking. Documentation and certificates of conformance available upon request.',
-    number: '05',
-  },
-  {
-    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
-    title: 'Dedicated Accounts',
-    description: 'Volume pricing, scheduled deliveries, and dedicated support for recurring industrial customers.',
-    number: '06',
-  },
+];
+
+const outcomeStats = [
+  { value: 'Same-day', label: 'handling on stocked orders' },
+  { value: '4 hrs', label: 'target quote reply during business hours' },
+  { value: 'Traceable', label: 'lot and documentation workflows' },
 ];
 
 export default function WhyNemesis() {
@@ -48,61 +39,74 @@ export default function WhyNemesis() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 }
     );
-    const els = sectionRef.current?.querySelectorAll('.fade-up, .fade-left, .fade-right');
-    els?.forEach((el) => observer.observe(el));
+
+    const animated = sectionRef.current?.querySelectorAll('.fade-up, .fade-left, .fade-right');
+    animated?.forEach((node) => observer.observe(node));
+
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative max-w-[1400px] mx-auto px-4 py-24 overflow-hidden">
-      {/* Decorative background */}
-      <div className="deco-text absolute top-[5%] left-[-3%] opacity-20">
-        02
-      </div>
+    <section ref={sectionRef} className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-24">
+      <div className="deco-text absolute left-[-3%] top-[10%] opacity-20">02</div>
 
-      <div className="text-center mb-16 fade-up">
-        <div className="accent-line accent-line-center mb-4" />
-        <span className="text-amber-600 text-xs font-bold uppercase tracking-[3px]">Why Choose Us</span>
-        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wide mt-3 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
-          Built for Industry
-        </h2>
-        <p className="text-muted mt-3 max-w-xl mx-auto text-lg">
-          Reliable bearing solutions with transparent sourcing, real technical support, and straightforward terms.
-        </p>
-      </div>
+      <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <div className="fade-left surface-panel rounded-[2rem] p-7 md:p-8">
+          <span className="section-kicker">Why The Redesign Helps</span>
+          <h2 className="mt-4 text-4xl font-bold text-steel-950 md:text-5xl" style={{ fontFamily: 'var(--font-heading)' }}>
+            More than a prettier homepage. The whole buying path reads better.
+          </h2>
+          <p className="mt-5 text-base leading-8 text-steel-600">
+            The refresh makes the site feel like a serious industrial supplier instead of a starter template.
+            Shared components, consistent spacing, stronger hierarchy, and cleaner product presentation now work together.
+          </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
-        {features.map((feature) => (
-          <div
-            key={feature.title}
-            className="fade-up group relative bg-surface border border-border rounded-xl p-7 hover:border-amber-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl overflow-hidden"
-          >
-            {/* Background number */}
-            <span className="absolute top-3 right-4 text-[72px] font-black text-steel-100/60 group-hover:text-amber-500/[0.06] transition-colors duration-500 leading-none" style={{ fontFamily: 'var(--font-heading)' }}>
-              {feature.number}
-            </span>
+          <div className="mt-7 grid gap-3">
+            {outcomeStats.map((stat) => (
+              <div key={stat.label} className="rounded-[1.4rem] border border-steel-200 bg-white/82 px-5 py-4">
+                <p className="text-2xl font-bold text-navy-950" style={{ fontFamily: 'var(--font-heading)' }}>
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-sm text-steel-600">{stat.label}</p>
+              </div>
+            ))}
+          </div>
 
-            {/* Hover gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-500/0 group-hover:from-amber-500/[0.02] group-hover:to-amber-500/[0.05] transition-all duration-500 rounded-xl" />
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href="/quality" className="btn-dark">
+              View Quality
+            </Link>
+            <Link href="/contact" className="btn-outline">
+              Contact Team
+            </Link>
+          </div>
+        </div>
 
-            <div className="relative">
-              <div className="w-14 h-14 rounded-xl bg-navy-900 flex items-center justify-center mb-5 group-hover:bg-amber-500 group-hover:shadow-lg group-hover:shadow-amber-500/20 transition-all duration-500">
-                <svg className="w-6 h-6 text-amber-500 group-hover:text-navy-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
+        <div className="grid gap-5 sm:grid-cols-2 stagger-children">
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+              className="fade-up surface-card hover-lift rounded-[1.8rem] p-6"
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] bg-navy-900 text-amber-400">
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={feature.icon} />
                 </svg>
               </div>
-              <h3 className="font-bold text-base uppercase tracking-wider mb-3 group-hover:text-amber-600 transition-colors duration-300" style={{ fontFamily: 'var(--font-heading)' }}>
+              <h3 className="mt-5 text-2xl font-semibold text-steel-950" style={{ fontFamily: 'var(--font-heading)' }}>
                 {feature.title}
               </h3>
-              <p className="text-sm text-muted leading-relaxed">{feature.description}</p>
+              <p className="mt-3 text-sm leading-7 text-steel-600">{feature.description}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

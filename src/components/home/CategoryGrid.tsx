@@ -7,11 +7,11 @@ import { useEffect, useRef } from 'react';
 const categoryIcons: Record<string, string> = {
   'ball-bearings': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14a4 4 0 110-8 4 4 0 010 8z',
   'roller-bearings': 'M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z',
-  'spherical-bearings': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z',
-  'thrust-bearings': 'M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5z',
-  'mounted-units': 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM12 8a4 4 0 100 8 4 4 0 000-8z',
-  'housings': 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',
-  'seals-and-accessories': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z',
+  'spherical-bearings': 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 0c-4.42 0-8 3.58-8 8 0 3.74 2.57 6.88 6.03 7.74L10 12l4-4 3.97-.26C16.73 4.78 14.33 2 12 2z',
+  'thrust-bearings': 'M12 3l5.5 8H6.5L12 3zm0 4.1L10.15 10h3.7L12 7.1zM17.5 13a4.5 4.5 0 100 9 4.5 4.5 0 000-9z',
+  'mounted-units': 'M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 13a4 4 0 110-8 4 4 0 010 8z',
+  housings: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',
+  'seals-and-accessories': 'M12 2a10 10 0 100 20 10 10 0 000-20zm0 15a5 5 0 110-10 5 5 0 010 10z',
 };
 
 export default function CategoryGrid() {
@@ -21,74 +21,87 @@ export default function CategoryGrid() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12 }
     );
-    const els = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
-    els?.forEach((el) => observer.observe(el));
+
+    const animated = sectionRef.current?.querySelectorAll('.fade-up, .scale-up');
+    animated?.forEach((node) => observer.observe(node));
+
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative max-w-[1400px] mx-auto px-4 py-24 overflow-hidden">
-      {/* Decorative background number */}
-      <div className="deco-text absolute top-0 right-[-5%] opacity-20">
-        01
+    <section ref={sectionRef} className="relative mx-auto max-w-[1400px] overflow-hidden px-4 py-24">
+      <div className="deco-text absolute right-[-4%] top-[5%] opacity-25">01</div>
+
+      <div className="fade-up flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-3xl">
+          <span className="section-kicker">Catalog Structure</span>
+          <h2 className="section-title mt-4 text-steel-950">A cleaner path into the product families buyers search most.</h2>
+          <p className="section-copy mt-5">
+            The catalog now reads more like an industrial storefront: clearer category entry points,
+            better product context, and faster access to the route that matters.
+          </p>
+        </div>
+        <div className="surface-card max-w-md rounded-[1.6rem] p-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+            Quick summary
+          </p>
+          <p className="mt-3 text-sm leading-7 text-steel-600">
+            Ball, roller, spherical, thrust, mounted units, housings, and accessories all sit on the same
+            visual system so the site feels more complete instead of stitched together.
+          </p>
+        </div>
       </div>
 
-      <div className="fade-up text-center mb-16">
-        <div className="accent-line accent-line-center mb-4" />
-        <span className="text-amber-600 text-xs font-bold uppercase tracking-[3px]">Browse By Category</span>
-        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-wide mt-3 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
-          Product Categories
-        </h2>
-        <p className="text-muted max-w-xl mx-auto text-lg">
-          Browse our full catalog of industrial bearings, mounted units, and accessories.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 stagger-children">
-        {categories.map((cat, i) => (
+      <div className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4 stagger-children">
+        {categories.map((cat) => (
           <Link
             key={cat.slug}
             href={`/shop/${cat.slug}`}
-            className="fade-up group relative bg-navy-900 rounded-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-2"
+            className="fade-up surface-card hover-lift group flex h-full flex-col rounded-[1.8rem] p-6"
           >
-            {/* Hover gradient reveal */}
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-amber-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-transparent group-hover:to-amber-500/10 transition-all duration-500" />
-
-            {/* Top accent line */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-            <div className="relative p-7 flex flex-col min-h-[180px] justify-between">
-              {/* Category number */}
-              <span className="absolute top-4 right-4 text-[64px] font-black text-white/[0.02] group-hover:text-amber-500/[0.06] transition-colors duration-500 leading-none" style={{ fontFamily: 'var(--font-heading)' }}>
-                {String(i + 1).padStart(2, '0')}
-              </span>
-
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 group-hover:bg-amber-500/20 group-hover:border-amber-500/40 group-hover:shadow-lg group-hover:shadow-amber-500/10 transition-all duration-500">
-                <svg className="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
-                  <path d={categoryIcons[cat.slug] || 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14a4 4 0 110-8 4 4 0 010 8z'} />
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] bg-navy-900 text-amber-400">
+                <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d={categoryIcons[cat.slug] || categoryIcons['ball-bearings']} />
                 </svg>
               </div>
+              <span className="rounded-full bg-steel-100 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-steel-600">
+                {cat.productCount} SKUs
+              </span>
+            </div>
 
-              <div>
-                <h3 className="font-bold text-white text-base mb-1.5 group-hover:text-amber-400 transition-colors duration-300" style={{ fontFamily: 'var(--font-heading)', letterSpacing: '0.5px' }}>
-                  {cat.name.toUpperCase()}
-                </h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-steel-600 group-hover:text-steel-500 transition-colors">{cat.productCount} products</span>
-                  <div className="flex items-center gap-1 text-steel-600 group-hover:text-amber-500 transition-all duration-300">
-                    <span className="text-[10px] uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-semibold">View</span>
-                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-6">
+              <h3 className="text-2xl font-semibold text-steel-950" style={{ fontFamily: 'var(--font-heading)' }}>
+                {cat.name}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-steel-600">{cat.description}</p>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-2">
+              {cat.subcategories.slice(0, 3).map((sub) => (
+                <span
+                  key={sub.slug}
+                  className="rounded-full border border-steel-200 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-steel-500"
+                >
+                  {sub.name}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-8">
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:text-blue-500">
+                Browse category
+                <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
             </div>
           </Link>
         ))}
